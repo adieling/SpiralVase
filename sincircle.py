@@ -223,9 +223,16 @@ bpy.ops.object.mode_set(mode='OBJECT')
 
 # delete objects, clean up ....
 print("preparing environment")
-for i in bpy.data.objects :
-    i.select = True
-    bpy.ops.object.delete()
+#for i in bpy.data.objects :
+#    i.select_set(True)
+#    bpy.ops.object.delete()
+objects_to_delete = []
+for obj in bpy.data.objects:
+    objects_to_delete.append(obj)
+
+for obj in objects_to_delete:
+    bpy.data.objects.remove(obj, do_unlink=True)
+
 
 # add camera
 bpy.ops.object.camera_add()
@@ -241,22 +248,26 @@ scene.camera.rotation_euler[0] = radians(80)
 scene.camera.rotation_euler[1] = 0
 scene.camera.rotation_euler[2] = 0
 
-# add lamp
-bpy.ops.object.lamp_add(type='SUN')
-lamp = bpy.context.active_object
-lamp.data.color = (0.228546, 0.271841, 1) # light blue
-lamp.rotation_euler[0] = scene.camera.rotation_euler[0]
-lamp.rotation_euler[1] = scene.camera.rotation_euler[1]
-lamp.rotation_euler[2] = scene.camera.rotation_euler[2]
+# add light
+bpy.ops.object.light_add(type='SUN')
+light = bpy.context.active_object
+light.data.color = (0.228546, 0.271841, 1) # light blue
+light.rotation_euler[0] = scene.camera.rotation_euler[0]
+light.rotation_euler[1] = scene.camera.rotation_euler[1]
+light.rotation_euler[2] = scene.camera.rotation_euler[2]
 
 print("building object")
 mesh = bpy.data.meshes.new("mesh")  # add a new mesh
 # add a new object using the mesh
 obj = bpy.data.objects.new("SpiralVase", mesh)
 
-scene.objects.link(obj)  # put the object into the scene (link)
-scene.objects.active = obj  # set as the active object in the scene
-obj.select = True  # select object
+#scene.objects.append(obj)  # put the object into the scene (link)
+#scene.objects.active = obj  # set as the active object in the scene
+#obj.select = True  # select object
+scene.collection.objects.link(obj)  # put the object into the scene (link)
+bpy.context.view_layer.objects.active = obj  # set as the active object in the scene
+obj.select_set(True)  # select object
+
 
 mesh = bpy.context.object.data
 bm = bmesh.new()
@@ -356,10 +367,10 @@ for area in bpy.context.screen.areas :
         bpy.ops.view3d.view_selected(ctx)
         bpy.ops.view3d.camera_to_view_selected(ctx)
 
-# set lamp position to camera position
-lamp.location[0] = scene.camera.location[0]
-lamp.location[1] = scene.camera.location[1]
-lamp.location[2] = scene.camera.location[2]
+# set light position to camera position
+light.location[0] = scene.camera.location[0]
+light.location[1] = scene.camera.location[1]
+light.location[2] = scene.camera.location[2]
 
 if 'png' in A :
     print("exporting image")
