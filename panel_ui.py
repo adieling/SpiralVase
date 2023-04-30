@@ -54,21 +54,27 @@ class SpiralVaseRunScript(bpy.types.Operator):
         )
 
         return {'FINISHED'}
+    
+def run_spiral_vase_operator(self, context):
+    # Get the operator by its ID
+    op = bpy.ops.spiralvase.run_script
+    # Invoke the operator to generate the spiral vase
+    op()    
 
 def register():
     bpy.utils.register_class(SpiralVasePanel)
     bpy.utils.register_class(SpiralVaseRunScript)
 
     # Create properties for the options
-    bpy.types.Scene.num_slices = bpy.props.IntProperty(name="Slices", default=200, description="Number of slices (or layers) generated in the model.")
-    bpy.types.Scene.slice_height = bpy.props.FloatProperty(name="Slice Height", default=0.2, step=0.1, description="Height of each slice.")
-    bpy.types.Scene.num_samples = bpy.props.IntProperty(name="Samples", default=200, description="Number of samples taken on the edge of each slice.")
-    bpy.types.Scene.base_radius = bpy.props.FloatProperty(name="Base Radius", default=14.0, step=0.1, description="Base radius of each slice before scaling is applied.")
-    bpy.types.Scene.slice_scale = bpy.props.FloatVectorProperty(name="Slice Scale", size=3, default=(0, 100, 0.3), description="Controls the scaling of each slice, when set to [0 0 1] no scaling is performed. The slice scaling is calculated by a sine wave running vertically, where the first and second arguments are used to linearly interpolate (for each slice) a value in the domain of the sine function (in degrees). The final argument defines the amplitude of the sine wave.")
-    bpy.types.Scene.slice_rotate = bpy.props.FloatVectorProperty(name="Slice Rotate", size=3, default=(0, 180, 30), description="Controls the rotation of each slice, when set to [0 0 1] no rotation is performed. The slice rotation is calculated by a sine wave running vertically, where the first and second arguments are used to linearly interpolate (for each slice) a value in the domain of the sine function (in degrees). The final argument defines the amplitude of the sine wave.")
-    bpy.types.Scene.minor_radius = bpy.props.FloatProperty(name="Minor Radius", default=1.0, step=0.1, description="Each slice starts as a circle, and then has its edge transformed into a sine wave. This value sets the amplitude of the sine wave. To have each slice remain as a circle, set this value to 0.")
-    bpy.types.Scene.minor_freq = bpy.props.IntProperty(name="Minor Freq", default=12, description="Each slice starts as a circle, and then has its edge transformed into a sine wave. This value sets the number of resulting sine waves. Only complete waves are supported, thus this value must be an integer.")
-    bpy.types.Scene.slice_wave = bpy.props.FloatVectorProperty(name="Slice Wave", size=3, default=(0, 1480, 199), description="Controls the magnitude of the sine wave applied on each slice by running a second vertical sine wave, that is multiplied against the wave on the edge of each slice. This can be used to create a bumpy texture on the vase or chamfer the base/top. The first two parameters define the start and stop of the sine wave. E.g. values of [0, 180, slices] would result in a round top and bottom with the ridges graduated in and out. The final parameter is a cut-off (in layers), so that it's possible to chamfer the base of the base into a circle, i.e. the default value of [0,90,20] will start the base with a round circle (as the first value is sin(0)=0) and over the subsequent 20 layers graduate to the maximum ridges as sin(90)=1.")
+    bpy.types.Scene.num_slices = bpy.props.IntProperty(name="Slices", default=200, description="Number of slices (or layers) generated in the model.", update=run_spiral_vase_operator)
+    bpy.types.Scene.slice_height = bpy.props.FloatProperty(name="Slice Height", default=0.2, step=0.1, description="Height of each slice.", update=run_spiral_vase_operator)
+    bpy.types.Scene.num_samples = bpy.props.IntProperty(name="Samples", default=200, description="Number of samples taken on the edge of each slice.", update=run_spiral_vase_operator)
+    bpy.types.Scene.base_radius = bpy.props.FloatProperty(name="Base Radius", default=14.0, step=0.1, description="Base radius of each slice before scaling is applied.", update=run_spiral_vase_operator)
+    bpy.types.Scene.slice_scale = bpy.props.FloatVectorProperty(name="Slice Scale", size=3, default=(0, 100, 0.3), description="Controls the scaling of each slice, when set to [0 0 1] no scaling is performed. The slice scaling is calculated by a sine wave running vertically, where the first and second arguments are used to linearly interpolate (for each slice) a value in the domain of the sine function (in degrees). The final argument defines the amplitude of the sine wave.", update=run_spiral_vase_operator)
+    bpy.types.Scene.slice_rotate = bpy.props.FloatVectorProperty(name="Slice Rotate", size=3, default=(0, 180, 30), description="Controls the rotation of each slice, when set to [0 0 1] no rotation is performed. The slice rotation is calculated by a sine wave running vertically, where the first and second arguments are used to linearly interpolate (for each slice) a value in the domain of the sine function (in degrees). The final argument defines the amplitude of the sine wave.", update=run_spiral_vase_operator)
+    bpy.types.Scene.minor_radius = bpy.props.FloatProperty(name="Minor Radius", default=1.0, step=0.1, description="Each slice starts as a circle, and then has its edge transformed into a sine wave. This value sets the amplitude of the sine wave. To have each slice remain as a circle, set this value to 0.", update=run_spiral_vase_operator)
+    bpy.types.Scene.minor_freq = bpy.props.IntProperty(name="Minor Freq", default=12, description="Each slice starts as a circle, and then has its edge transformed into a sine wave. This value sets the number of resulting sine waves. Only complete waves are supported, thus this value must be an integer.", update=run_spiral_vase_operator)
+    bpy.types.Scene.slice_wave = bpy.props.FloatVectorProperty(name="Slice Wave", size=3, default=(0, 1480, 199), description="Controls the magnitude of the sine wave applied on each slice by running a second vertical sine wave, that is multiplied against the wave on the edge of each slice. This can be used to create a bumpy texture on the vase or chamfer the base/top. The first two parameters define the start and stop of the sine wave. E.g. values of [0, 180, slices] would result in a round top and bottom with the ridges graduated in and out. The final parameter is a cut-off (in layers), so that it's possible to chamfer the base of the base into a circle, i.e. the default value of [0,90,20] will start the base with a round circle (as the first value is sin(0)=0) and over the subsequent 20 layers graduate to the maximum ridges as sin(90)=1.", update=run_spiral_vase_operator)
 
 
 def unregister():
