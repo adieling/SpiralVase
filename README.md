@@ -4,6 +4,8 @@ Python script for Blender to generate spiral vase models that can be
 exported for use with 3D printers. All vases are heavily based on
 sinusoidal functions.
 
+A Blender GUI Panel panel_ui.py with live update has also been added.
+
 ## Examples
 
 A number of example shapes are provided, and are defined in the
