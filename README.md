@@ -1,4 +1,4 @@
-# Spiral Vase
+# Spiral Vase (this is a fixed version of the original script from Karim Kanso to work with Blender 2.8 and newer)
 
 Python script for Blender to generate spiral vase models that can be
 exported for use with 3D printers. All vases are heavily based on
